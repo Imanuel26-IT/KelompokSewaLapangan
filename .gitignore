@@ -1,0 +1,28 @@
+# NetBeans
+build/
+dist/
+nbproject/private/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# Compiled Java files
+*.class
+bin/
+
+# Log and OS files
+*.log
+Thumbs.db
+.DS_Store
