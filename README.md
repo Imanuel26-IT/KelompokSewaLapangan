@@ -1,97 +1,72 @@
-# ⚽ KelompokSewaLapangan - Sistem Booking Lapangan Olahraga (Tanpa DAO)
+# ⚽ KelompokSewaLapangan - Sistem Booking Lapangan Olahraga
 
-Repositori resmi untuk proyek kelompok mata kuliah Pemrograman Berorientasi Objek (PBO) / Tugas Kelompok. Aplikasi desktop dibangun menggunakan **Java Swing** dan terhubung ke basis data **MySQL (JDBC)** dengan arsitektur **Tanpa DAO** (query SQL dieksekusi langsung di dalam class GUI masing-masing modul).
+Repositori awal (starter template) untuk proyek kelompok mata kuliah Pemrograman Berorientasi Objek (PBO) / Tugas Kelompok. Seluruh folder arsitektur proyek telah disiapkan sesuai kaidah **MVC (Model-View-Controller) tanpa DAO** (query langsung pada form/modul).
+
+File implementasi `.java` sengaja dikosongkan agar masing-masing anggota kelompok dapat membuat dan mengisi kodenya sendiri sesuai pembagian tugas.
 
 ---
 
-## 📁 Struktur Folder Proyek
+## 📁 Struktur Folder Proyek (MVC Tanpa DAO)
 
 ```
 KelompokSewaLapangan/
-├── build.xml                           # Script Ant Build untuk NetBeans
-├── manifest.mf                         # Java Manifest file
-├── .gitignore                          # Ignore build & cache IDE
-├── db_booking_lapangan.sql             # Skrip database MySQL & dummy data
-├── README.md                           # Dokumentasi proyek & pembagian tugas
+├── .gitignore                          # Pengaturan ignore build & cache NetBeans
+├── README.md                           # Panduan struktur folder & tugas anggota
+├── db_booking_lapangan.sql             # Skema basis data MySQL & data dummy awal
 ├── lib/
-│   └── mysql-connector-j-26.10.0.jar  # Driver JDBC MySQL
-├── nbproject/                          # Konfigurasi Apache NetBeans
+│   └── mysql-connector-j-26.10.0.jar  # Driver JDBC MySQL (siap pakai)
+├── nbproject/                          # Konfigurasi Apache NetBeans IDE
 │   ├── build-impl.xml
 │   ├── genfiles.properties
 │   ├── project.properties
 │   └── project.xml
+├── build.xml                           # Ant build script NetBeans
+├── manifest.mf
 └── src/
-    ├── main/
-    │   └── Main.java                   # Main Entry Point (Menjalankan MainMenu)
-    ├── koneksi/
-    │   └── Koneksi.java                <- Anggota 1 (Koneksi Database JDBC)
-    ├── model/                          <- Anggota 1 (Penampung Data / Entity)
+    ├── main/                           # Entry Point aplikasi (Main.java)
+    ├── koneksi/                        # Koneksi database MySQL JDBC (Koneksi.java) <- Anggota 1
+    ├── model/                          # [M - Model] Class Entity Data Penampung <- Anggota 1
     │   ├── Member.java
     │   ├── Lapangan.java
     │   ├── Jadwal.java
     │   ├── Booking.java
-    │   └── Transaksi.java              # Ada rumus hitungTotal(harga, durasi)
-    └── gui/                            <- SEMUA QUERY ADA DI SINI (Tanpa DAO)
+    │   └── Transaksi.java              # (Ada rumus hitungTotal)
+    ├── controller/                     # [C - Controller] Controller MVC (jika digunakan)
+    └── gui/                            # [V - View] Form Antarmuka Swing (Tanpa DAO)
         ├── MainMenu.java               # Dashboard Menu Utama
-        ├── admin/                      <- Anggota 2
-        │   ├── FormLapangan.java       # Query CRUD data lapangan
-        │   ├── FormJadwal.java         # Query kelola jadwal lapangan
-        │   └── FormHarga.java          # Query update tarif harga per jam
-        ├── member/                     <- Anggota 3
-        │   ├── FormLogin.java          # Query autentikasi user / admin
-        │   └── FormRegistrasi.java     # Query insert pendaftaran member
-        ├── booking/                    <- Anggota 4
-        │   └── FormBooking.java        # Query pemesanan jadwal lapangan
-        └── transaksi/                  <- Kamu (Valen)
-            ├── FormTransaksi.java      # Query transaksi & hitung total
-            └── FormLaporan.java        # Query rekapitulasi & pembatalan
+        ├── admin/                      # Form Admin <- Anggota 2
+        │   ├── FormLapangan.java
+        │   ├── FormJadwal.java
+        │   └── FormHarga.java
+        ├── member/                     # Form Member <- Anggota 3
+        │   ├── FormLogin.java
+        │   └── FormRegistrasi.java
+        ├── booking/                    # Form Booking <- Anggota 4
+        │   └── FormBooking.java
+        └── transaksi/                  # Form Transaksi & Laporan <- Kamu (Valen)
+            ├── FormTransaksi.java
+            └── FormLaporan.java
 ```
 
 ---
 
-## 👥 Pembagian Tugas Anggota Kelompok
+## 👥 Panduan Pembagian Tugas Anggota Kelompok
 
-| Bagian | Anggota | File / Modul | Deskripsi Tugas |
-|---|---|---|---|
-| **Koneksi & Model** | **Anggota 1** | `koneksi/Koneksi.java`<br>`model/*.java` | - Membuat koneksi JDBC ke MySQL (`db_booking_lapangan`).<br>- Membuat class entity model data: `Member`, `Lapangan`, `Jadwal`, `Booking`, dan `Transaksi` (lengkap dengan rumus `hitungTotal`). |
-| **Admin** | **Anggota 2** | `gui/admin/FormLapangan.java`<br>`gui/admin/FormJadwal.java`<br>`gui/admin/FormHarga.java` | - Mengelola CRUD data lapangan olahraga.<br>- Mengatur jadwal ketersediaan lapangan.<br>- Mengatur tarif dan harga sewa per jam lapangan. |
-| **Member** | **Anggota 3** | `gui/member/FormLogin.java`<br>`gui/member/FormRegistrasi.java` | - Form autentikasi login untuk Member dan Admin.<br>- Form pendaftaran member baru ke sistem. |
-| **Booking** | **Anggota 4** | `gui/booking/FormBooking.java` | - Memproses booking jadwal lapangan oleh member.<br>- Mengubah status jadwal lapangan menjadi *Dipesan* secara otomatis. |
-| **Transaksi & Laporan** | **Kamu (Valen)** | `gui/transaksi/FormTransaksi.java`<br>`gui/transaksi/FormLaporan.java` | - Memproses pembayaran booking dan menghitung total harga otomatis (`harga/jam * durasi`).<br>- Menampilkan rekapitulasi transaksi pendapatan serta pembatalan booking. |
+Setiap anggota kelompok silakan membuat file baru di dalam package masing-masing melalui Apache NetBeans (**Klik kanan package > New > Java Class...** atau **New > JFrame Form...**):
 
----
-
-## 🚀 Panduan Menjalankan Proyek
-
-### 1. Persiapan Database MySQL (XAMPP)
-1. Buka **XAMPP Control Panel**, nyalakan modul **Apache** dan **MySQL** (klik *Start*).
-2. Buka browser dan kunjungi [http://localhost/phpmyadmin](http://localhost/phpmyadmin).
-3. Buat database baru bernama `db_booking_lapangan` (atau klik tab **Import**).
-4. Pilih file **`db_booking_lapangan.sql`** yang tersedia di repositori ini, lalu klik **Import / Go**.
-5. *Catatan:* Jika MySQL XAMPP Anda menggunakan password, buka `src/koneksi/Koneksi.java` dan sesuaikan variabel `PASS = "password_anda"`.
-
-### 2. Membuka & Menjalankan di Apache NetBeans
-1. Buka **Apache NetBeans IDE**.
-2. Pilih menu **File** -> **Open Project...** (`Ctrl + Shift + O`).
-3. Cari dan pilih folder repositori **`KelompokSewaLapangan`** (ikon cangkir kopi Java akan terdeteksi otomatis).
-4. Klik **Open Project**. Driver MySQL di folder `lib/` sudah otomatis terhubung ke classpath proyek.
-5. Jalankan aplikasi dengan menekan tombol **F6** (atau klik kanan proyek -> **Run**).
-6. Main Class: `main.Main`.
-
-### 3. Menjalankan Lewat Terminal / Command Prompt
-```bash
-# Clone repositori
-git clone https://github.com/Imanuel26-IT/KelompokSewaLapangan.git
-cd KelompokSewaLapangan
-
-# Kompilasi semua file Java
-javac -cp "lib/mysql-connector-j-26.10.0.jar;src" -d bin src/main/*.java src/koneksi/*.java src/model/*.java src/gui/*.java src/gui/admin/*.java src/gui/member/*.java src/gui/booking/*.java src/gui/transaksi/*.java
-
-# Jalankan aplikasi
-java -cp "lib/mysql-connector-j-26.10.0.jar;bin" main.Main
-```
+| Bagian | Anggota | Folder / Package | File yang Perlu Dibuat | Deskripsi Tugas |
+|---|---|---|---|---|
+| **Koneksi & Model** | **Anggota 1** | `src/koneksi/`<br>`src/model/` | `Koneksi.java`<br>`Member.java`<br>`Lapangan.java`<br>`Jadwal.java`<br>`Booking.java`<br>`Transaksi.java` | - Mengatur koneksi JDBC MySQL.<br>- Membuat class entity (atribut, constructor, getter/setter) dan rumus `hitungTotal` pada `Transaksi.java`. |
+| **Admin** | **Anggota 2** | `src/gui/admin/` | `FormLapangan.java`<br>`FormJadwal.java`<br>`FormHarga.java` | Membuat GUI dan query database untuk mengelola data lapangan, jadwal operasional, dan tarif sewa per jam. |
+| **Member** | **Anggota 3** | `src/gui/member/` | `FormLogin.java`<br>`FormRegistrasi.java` | Membuat GUI dan query autentikasi login (Admin/Member) serta pendaftaran akun member baru. |
+| **Booking** | **Anggota 4** | `src/gui/booking/` | `FormBooking.java` | Membuat GUI dan query pemesanan lapangan serta mengubah status jadwal menjadi *Dipesan*. |
+| **Transaksi & Laporan** | **Kamu (Valen)** | `src/gui/transaksi/` | `FormTransaksi.java`<br>`FormLaporan.java` | Membuat GUI transaksi pembayaran dengan perhitungan total otomatis, rekapitulasi laporan pendapatan, dan pembatalan transaksi. |
+| **Integrasi Utama** | **Tim** | `src/main/`<br>`src/gui/` | `Main.java`<br>`MainMenu.java` | Dashboard utama yang menghubungkan seluruh form dan menjalankan aplikasi. |
 
 ---
 
-## 💡 Konsep Arsitektur Tanpa DAO
-Pada proyek ini, seluruh query SQL (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) dituliskan secara langsung di dalam method handler event masing-masing Form GUI (Swing). Pendekatan ini mempermudah setiap anggota kelompok untuk mengerjakan dan menguji bagian form-nya masing-masing secara independen tanpa ketergantungan layer DAO terpusat.
+## 🚀 Cara Menjalankan di Apache NetBeans
+1. Nyalakan modul **Apache** dan **MySQL** di XAMPP Control Panel.
+2. Import file **`db_booking_lapangan.sql`** ke phpMyAdmin.
+3. Buka Apache NetBeans > **File** > **Open Project...** > pilih folder **`KelompokSewaLapangan`**.
+4. Driver MySQL di folder `lib/` sudah otomatis terpasang.
