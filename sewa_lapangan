@@ -1,0 +1,79 @@
+
+CREATE DATABASE IF NOT EXISTS sewa_lapangan;
+
+USE sewa_lapangan;
+
+-- 1. TABEL ADMIN
+CREATE TABLE admin (
+    admin_id INT AUTO_INCREMENT PRIMARY KEY,
+    nama VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+) ENGINE=InnoDB;
+
+-- 2. TABEL MEMBER
+CREATE TABLE member (
+    member_id INT AUTO_INCREMENT PRIMARY KEY,
+    nama VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    no_telp VARCHAR(20)
+) ENGINE=InnoDB;
+
+-- 3. TABEL LAPANGAN
+CREATE TABLE lapangan (
+    lapangan_id INT AUTO_INCREMENT PRIMARY KEY,
+    nama_lapangan VARCHAR(100) NOT NULL,
+    jenis VARCHAR(50) NOT NULL,
+    harga_per_jam DECIMAL(12,2) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'Aktif'
+) ENGINE=InnoDB;
+
+-- 4. TABEL JADWAL
+CREATE TABLE jadwal (
+    jadwal_id INT AUTO_INCREMENT PRIMARY KEY,
+    lapangan_id INT NOT NULL,
+    tanggal DATE NOT NULL,
+    jam_mulai TIME NOT NULL,
+    jam_selesai TIME NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'Tersedia',
+
+    CONSTRAINT fk_jadwal_lapangan
+    FOREIGN KEY (lapangan_id)
+    REFERENCES lapangan(lapangan_id),
+
+    CONSTRAINT chk_jam
+    CHECK (jam_selesai > jam_mulai)
+) ENGINE=InnoDB;
+
+-- 5. TABEL BOOKING
+CREATE TABLE booking (
+    booking_id INT AUTO_INCREMENT PRIMARY KEY,
+    member_id INT NOT NULL,
+    jadwal_id INT NOT NULL,
+    tanggal_booking DATE NOT NULL,
+    total_harga DECIMAL(12,2) NOT NULL,
+    status_booking VARCHAR(20) NOT NULL DEFAULT 'Pending',
+
+    CONSTRAINT fk_booking_member
+    FOREIGN KEY (member_id)
+    REFERENCES member(member_id),
+
+    CONSTRAINT fk_booking_jadwal
+    FOREIGN KEY (jadwal_id)
+    REFERENCES jadwal(jadwal_id)
+) ENGINE=InnoDB;
+
+-- 6. TABEL TRANSAKSI
+CREATE TABLE transaksi (
+    transaksi_id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT NOT NULL,
+    total_bayar DECIMAL(12,2) NOT NULL,
+    metode_pembayaran VARCHAR(30) NOT NULL,
+    status_pembayaran VARCHAR(30) NOT NULL DEFAULT 'Belum Bayar',
+    tanggal_transaksi DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_transaksi_booking
+    FOREIGN KEY (booking_id)
+    REFERENCES booking(booking_id)
+) ENGINE=InnoDB;
