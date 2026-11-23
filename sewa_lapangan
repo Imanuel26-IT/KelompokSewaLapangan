@@ -1,79 +1,266 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.3
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Waktu pembuatan: 23 Nov 2026 pada 15.54
+-- Versi server: 10.11.16-MariaDB
+-- Versi PHP: 8.4.27
 
-CREATE DATABASE IF NOT EXISTS sewa_lapangan;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
-USE sewa_lapangan;
 
--- 1. TABEL ADMIN
-CREATE TABLE admin (
-    admin_id INT AUTO_INCREMENT PRIMARY KEY,
-    nama VARCHAR(50) NOT NULL,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
-) ENGINE=InnoDB;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
--- 2. TABEL MEMBER
-CREATE TABLE member (
-    member_id INT AUTO_INCREMENT PRIMARY KEY,
-    nama VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    no_telp VARCHAR(20)
-) ENGINE=InnoDB;
+--
+-- Basis data: `sewa_lapangan`
+--
 
--- 3. TABEL LAPANGAN
-CREATE TABLE lapangan (
-    lapangan_id INT AUTO_INCREMENT PRIMARY KEY,
-    nama_lapangan VARCHAR(100) NOT NULL,
-    jenis VARCHAR(50) NOT NULL,
-    harga_per_jam DECIMAL(12,2) NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'Aktif'
-) ENGINE=InnoDB;
+-- --------------------------------------------------------
 
--- 4. TABEL JADWAL
-CREATE TABLE jadwal (
-    jadwal_id INT AUTO_INCREMENT PRIMARY KEY,
-    lapangan_id INT NOT NULL,
-    tanggal DATE NOT NULL,
-    jam_mulai TIME NOT NULL,
-    jam_selesai TIME NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'Tersedia',
+--
+-- Struktur dari tabel `admin`
+--
 
-    CONSTRAINT fk_jadwal_lapangan
-    FOREIGN KEY (lapangan_id)
-    REFERENCES lapangan(lapangan_id),
+CREATE TABLE `admin` (
+  `admin_id` int(11) NOT NULL,
+  `nama` varchar(50) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-    CONSTRAINT chk_jam
-    CHECK (jam_selesai > jam_mulai)
-) ENGINE=InnoDB;
+--
+-- Dumping data untuk tabel `admin`
+--
 
--- 5. TABEL BOOKING
-CREATE TABLE booking (
-    booking_id INT AUTO_INCREMENT PRIMARY KEY,
-    member_id INT NOT NULL,
-    jadwal_id INT NOT NULL,
-    tanggal_booking DATE NOT NULL,
-    total_harga DECIMAL(12,2) NOT NULL,
-    status_booking VARCHAR(20) NOT NULL DEFAULT 'Pending',
+INSERT INTO `admin` (`admin_id`, `nama`, `username`, `password`) VALUES
+(1, 'Administrator', 'admin', 'admin123');
 
-    CONSTRAINT fk_booking_member
-    FOREIGN KEY (member_id)
-    REFERENCES member(member_id),
+-- --------------------------------------------------------
 
-    CONSTRAINT fk_booking_jadwal
-    FOREIGN KEY (jadwal_id)
-    REFERENCES jadwal(jadwal_id)
-) ENGINE=InnoDB;
+--
+-- Struktur dari tabel `booking`
+--
 
--- 6. TABEL TRANSAKSI
-CREATE TABLE transaksi (
-    transaksi_id INT AUTO_INCREMENT PRIMARY KEY,
-    booking_id INT NOT NULL,
-    total_bayar DECIMAL(12,2) NOT NULL,
-    metode_pembayaran VARCHAR(30) NOT NULL,
-    status_pembayaran VARCHAR(30) NOT NULL DEFAULT 'Belum Bayar',
-    tanggal_transaksi DATETIME DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE `booking` (
+  `booking_id` int(11) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `jadwal_id` int(11) NOT NULL,
+  `tanggal_booking` date NOT NULL,
+  `total_harga` decimal(12,2) NOT NULL,
+  `status_booking` varchar(20) NOT NULL DEFAULT 'Pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-    CONSTRAINT fk_transaksi_booking
-    FOREIGN KEY (booking_id)
-    REFERENCES booking(booking_id)
-) ENGINE=InnoDB;
+--
+-- Dumping data untuk tabel `booking`
+--
+
+INSERT INTO `booking` (`booking_id`, `member_id`, `jadwal_id`, `tanggal_booking`, `total_harga`, `status_booking`) VALUES
+(1, 1, 1, '2026-11-23', 100000.00, 'Pending');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `jadwal`
+--
+
+CREATE TABLE `jadwal` (
+  `jadwal_id` int(11) NOT NULL,
+  `lapangan_id` int(11) NOT NULL,
+  `tanggal` date NOT NULL,
+  `jam_mulai` time NOT NULL,
+  `jam_selesai` time NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'Tersedia'
+) ;
+
+--
+-- Dumping data untuk tabel `jadwal`
+--
+
+INSERT INTO `jadwal` (`jadwal_id`, `lapangan_id`, `tanggal`, `jam_mulai`, `jam_selesai`, `status`) VALUES
+(1, 1, '2026-12-10', '08:00:00', '09:00:00', 'Dipesan');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `lapangan`
+--
+
+CREATE TABLE `lapangan` (
+  `lapangan_id` int(11) NOT NULL,
+  `nama_lapangan` varchar(100) NOT NULL,
+  `jenis` varchar(50) NOT NULL,
+  `harga_per_jam` decimal(12,2) NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'Aktif'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `lapangan`
+--
+
+INSERT INTO `lapangan` (`lapangan_id`, `nama_lapangan`, `jenis`, `harga_per_jam`, `status`) VALUES
+(1, 'Lapangan Futsal 1', 'Futsal', 100000.00, 'Aktif'),
+(2, 'Lapangan Badminton 1', 'Badminton', 50000.00, 'Aktif'),
+(3, 'Lapangan Basket 1', 'Basket', 40000.00, 'Tidak Aktif');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `member`
+--
+
+CREATE TABLE `member` (
+  `member_id` int(11) NOT NULL,
+  `nama` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `no_telp` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `member`
+--
+
+INSERT INTO `member` (`member_id`, `nama`, `email`, `password`, `no_telp`) VALUES
+(1, 'Mathias', 'mathias@gmail.com', 'member123', '081234567890');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `transaksi`
+--
+
+CREATE TABLE `transaksi` (
+  `transaksi_id` int(11) NOT NULL,
+  `booking_id` int(11) NOT NULL,
+  `total_bayar` decimal(12,2) NOT NULL,
+  `metode_pembayaran` varchar(30) NOT NULL,
+  `status_pembayaran` varchar(30) NOT NULL DEFAULT 'Belum Bayar',
+  `tanggal_transaksi` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `transaksi`
+--
+
+INSERT INTO `transaksi` (`transaksi_id`, `booking_id`, `total_bayar`, `metode_pembayaran`, `status_pembayaran`, `tanggal_transaksi`) VALUES
+(1, 1, 100000.00, 'Transfer Bank', 'Belum Bayar', '2026-11-23 21:41:14');
+
+--
+-- Indeks untuk tabel yang dibuang
+--
+
+--
+-- Indeks untuk tabel `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`admin_id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Indeks untuk tabel `booking`
+--
+ALTER TABLE `booking`
+  ADD PRIMARY KEY (`booking_id`),
+  ADD KEY `fk_booking_member` (`member_id`),
+  ADD KEY `fk_booking_jadwal` (`jadwal_id`);
+
+--
+-- Indeks untuk tabel `jadwal`
+--
+ALTER TABLE `jadwal`
+  ADD PRIMARY KEY (`jadwal_id`),
+  ADD KEY `fk_jadwal_lapangan` (`lapangan_id`);
+
+--
+-- Indeks untuk tabel `lapangan`
+--
+ALTER TABLE `lapangan`
+  ADD PRIMARY KEY (`lapangan_id`);
+
+--
+-- Indeks untuk tabel `member`
+--
+ALTER TABLE `member`
+  ADD PRIMARY KEY (`member_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indeks untuk tabel `transaksi`
+--
+ALTER TABLE `transaksi`
+  ADD PRIMARY KEY (`transaksi_id`),
+  ADD KEY `fk_transaksi_booking` (`booking_id`);
+
+--
+-- AUTO_INCREMENT untuk tabel yang dibuang
+--
+
+--
+-- AUTO_INCREMENT untuk tabel `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT untuk tabel `booking`
+--
+ALTER TABLE `booking`
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT untuk tabel `jadwal`
+--
+ALTER TABLE `jadwal`
+  MODIFY `jadwal_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT untuk tabel `lapangan`
+--
+ALTER TABLE `lapangan`
+  MODIFY `lapangan_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT untuk tabel `member`
+--
+ALTER TABLE `member`
+  MODIFY `member_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT untuk tabel `transaksi`
+--
+ALTER TABLE `transaksi`
+  MODIFY `transaksi_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+--
+
+--
+-- Ketidakleluasaan untuk tabel `booking`
+--
+ALTER TABLE `booking`
+  ADD CONSTRAINT `fk_booking_jadwal` FOREIGN KEY (`jadwal_id`) REFERENCES `jadwal` (`jadwal_id`),
+  ADD CONSTRAINT `fk_booking_member` FOREIGN KEY (`member_id`) REFERENCES `member` (`member_id`);
+
+--
+-- Ketidakleluasaan untuk tabel `jadwal`
+--
+ALTER TABLE `jadwal`
+  ADD CONSTRAINT `fk_jadwal_lapangan` FOREIGN KEY (`lapangan_id`) REFERENCES `lapangan` (`lapangan_id`);
+
+--
+-- Ketidakleluasaan untuk tabel `transaksi`
+--
+ALTER TABLE `transaksi`
+  ADD CONSTRAINT `fk_transaksi_booking` FOREIGN KEY (`booking_id`) REFERENCES `booking` (`booking_id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
